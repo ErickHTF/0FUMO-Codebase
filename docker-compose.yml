@@ -1,0 +1,15 @@
+services:
+
+  postgres:
+    image: postgres:13.22
+    container_name: zerofumo
+    restart: always
+    environment:
+      POSTGRES_USER: zerofumo_user
+      POSTGRES_PASSWORD: zerofumo_pass
+      POSTGRES_DB: zerofumo_DB
+    ports:
+      - "5433:5432"
+
+volumes:
+  postgres_data:
