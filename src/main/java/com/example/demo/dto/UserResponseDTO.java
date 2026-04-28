@@ -12,6 +12,9 @@ public class UserResponseDTO {
     private String name;
     private String email;
     private boolean assessmentCompleted;
+    private Integer cigsPerDay;
+    private String packCostId;
+    private LocalDateTime quitDate;
     private LocalDateTime createdAt;
 
     public static UserResponseDTO from(User user) {
@@ -20,6 +23,9 @@ public class UserResponseDTO {
         dto.name = user.getName();
         dto.email = user.getEmail();
         dto.assessmentCompleted = user.isAssessmentCompleted();
+        dto.cigsPerDay = user.getCigsPerDay();
+        dto.packCostId = user.getPackCostId();
+        dto.quitDate = user.getQuitDate();
         dto.createdAt = user.getCreatedAt();
         return dto;
     }

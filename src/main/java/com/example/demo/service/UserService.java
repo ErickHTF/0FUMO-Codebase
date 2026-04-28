@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
@@ -59,6 +61,18 @@ public class UserService implements UserDetailsService {
 
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
+        return UserResponseDTO.from(userRepository.save(user));
+    }
+
+    public UserResponseDTO completeAssessment(String email, CompleteAssessmentDTO dto) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email));
+
+        user.setCigsPerDay(dto.getCigsPerDay());
+        user.setPackCostId(dto.getPackCostId());
+        user.setQuitDate(LocalDateTime.now());
+        user.setAssessmentCompleted(true);
+
         return UserResponseDTO.from(userRepository.save(user));
     }
 

@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.CompleteAssessmentDTO;
 import com.example.demo.dto.UpdateUserDTO;
 import com.example.demo.dto.UserResponseDTO;
 import com.example.demo.repository.UserRepository;
@@ -24,6 +25,14 @@ public class UserController {
         return userRepository.findByEmail(userDetails.getUsername())
                 .map(u -> ResponseEntity.ok(UserResponseDTO.from(u)))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/me/assessment")
+    public ResponseEntity<UserResponseDTO> completeAssessment(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody CompleteAssessmentDTO dto
+    ) {
+        return ResponseEntity.ok(userService.completeAssessment(userDetails.getUsername(), dto));
     }
 
     @GetMapping("/{id}")

@@ -32,6 +32,15 @@ public class User {
     @Builder.Default
     private boolean assessmentCompleted = false;
 
+    @Column
+    private Integer cigsPerDay;
+
+    @Column
+    private String packCostId;
+
+    @Column
+    private LocalDateTime quitDate;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
