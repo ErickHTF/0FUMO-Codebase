@@ -37,7 +37,7 @@ public class SmokingEvent {
     private String note;
 
     // Quando o evento realmente ocorreu (informado pelo usuário, padrão = agora)
-    @Column(nullable = false)
+    @Column
     private LocalDateTime occurredAt;
 
     // Quando o registro foi criado no sistema (sempre automático)

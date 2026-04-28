@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.CompleteAssessmentDTO;
-import com.example.demo.dto.UpdateUserDTO;
-import com.example.demo.dto.UserResponseDTO;
+import com.example.demo.dto.*;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import jakarta.validation.Valid;
@@ -33,6 +31,21 @@ public class UserController {
             @Valid @RequestBody CompleteAssessmentDTO dto
     ) {
         return ResponseEntity.ok(userService.completeAssessment(userDetails.getUsername(), dto));
+    }
+
+    @PutMapping("/me/quit-date")
+    public ResponseEntity<UserResponseDTO> updateQuitDate(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody UpdateQuitDateDTO dto
+    ) {
+        return ResponseEntity.ok(userService.updateQuitDate(userDetails.getUsername(), dto));
+    }
+
+    @GetMapping("/me/financial-projection")
+    public ResponseEntity<FinancialProjectionDTO> financialProjection(
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        return ResponseEntity.ok(userService.getFinancialProjection(userDetails.getUsername()));
     }
 
     @GetMapping("/{id}")

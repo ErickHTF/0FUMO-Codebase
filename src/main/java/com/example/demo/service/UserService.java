@@ -12,7 +12,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +77,56 @@ public class UserService implements UserDetailsService {
         user.setAssessmentCompleted(true);
 
         return UserResponseDTO.from(userRepository.save(user));
+    }
+
+    public UserResponseDTO updateQuitDate(String email, UpdateQuitDateDTO dto) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email));
+        user.setQuitDate(LocalDate.parse(dto.getQuitDate()).atStartOfDay());
+        return UserResponseDTO.from(userRepository.save(user));
+    }
+
+    // ── Insight 4: Projeção Financeira ───────────────────────────────────────
+
+    public FinancialProjectionDTO getFinancialProjection(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email));
+
+        LocalDateTime start = user.getQuitDate() != null
+                ? user.getQuitDate()
+                : user.getCreatedAt();
+
+        long days        = ChronoUnit.DAYS.between(start, LocalDateTime.now());
+        int cigsPerDay   = user.getCigsPerDay()  != null ? user.getCigsPerDay()  : 15;
+        double pricePerCig = packPrice(user.getPackCostId()) / 20.0;
+        double dailySaving = cigsPerDay * pricePerCig;
+
+        long   cigarettesAvoided = cigsPerDay * days;
+        double savedAmount       = round2(cigarettesAvoided * pricePerCig);
+
+        List<ProjectionMilestoneDTO> milestones = List.of(
+                new ProjectionMilestoneDTO(30,  round2(cigsPerDay * 30  * pricePerCig)),
+                new ProjectionMilestoneDTO(90,  round2(cigsPerDay * 90  * pricePerCig)),
+                new ProjectionMilestoneDTO(180, round2(cigsPerDay * 180 * pricePerCig)),
+                new ProjectionMilestoneDTO(365, round2(cigsPerDay * 365 * pricePerCig))
+        );
+
+        return new FinancialProjectionDTO(savedAmount, cigarettesAvoided, days,
+                milestones, round2(dailySaving));
+    }
+
+    private double packPrice(String packCostId) {
+        return switch (packCostId != null ? packCostId : "") {
+            case "r5_8"    -> 6.5;
+            case "r9_12"   -> 10.5;
+            case "r13_16"  -> 14.5;
+            case "r17plus" -> 19.0;
+            default        -> 10.5;
+        };
+    }
+
+    private double round2(double value) {
+        return Math.round(value * 100.0) / 100.0;
     }
 
     public void delete(Long id) {

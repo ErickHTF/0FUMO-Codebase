@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.CreateSmokingEventDTO;
-import com.example.demo.dto.SmokingEventResponseDTO;
-import com.example.demo.dto.SmokingEventStatsDTO;
+import com.example.demo.dto.*;
 import com.example.demo.entity.EventType;
 import com.example.demo.service.SmokingEventService;
 import jakarta.validation.Valid;
@@ -44,6 +42,20 @@ public class SmokingEventController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         return ResponseEntity.ok(eventService.getStats(userDetails.getUsername()));
+    }
+
+    @GetMapping("/heatmap")
+    public ResponseEntity<List<HeatmapPointDTO>> heatmap(
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        return ResponseEntity.ok(eventService.getHeatmap(userDetails.getUsername()));
+    }
+
+    @GetMapping("/relapse-correlation")
+    public ResponseEntity<RelapseCorrelationDTO> relapseCorrelation(
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        return ResponseEntity.ok(eventService.getRelapseCorrelation(userDetails.getUsername()));
     }
 
     @DeleteMapping("/{id}")
