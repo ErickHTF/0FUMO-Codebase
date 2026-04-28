@@ -40,4 +40,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of("error", "E-mail ou senha inválidos"));
     }
+
+    @ExceptionHandler(SmokingEventNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleEventNotFound(SmokingEventNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", ex.getMessage()));
+    }
 }

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Workspace/0FUMO- Frontend Codebase/**)",
+      "Bash(npm install:*)"
+    ]
+  }
+}
