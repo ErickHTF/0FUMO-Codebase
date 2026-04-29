@@ -21,13 +21,15 @@ public class UserService implements UserDetailsService {
     private final JwtService jwtService;
 
     public AuthResponseDTO register(RegisterRequestDTO dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new EmailAlreadyRegisteredException(dto.getEmail());
+        String email = dto.getEmail().toLowerCase();
+
+        if (userRepository.existsByEmailIgnoreCase(email)) {
+            throw new EmailAlreadyRegisteredException(email);
         }
 
         User user = User.builder()
                 .name(dto.getName())
-                .email(dto.getEmail())
+                .email(email)
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .build();
 
@@ -38,7 +40,7 @@ public class UserService implements UserDetailsService {
     }
 
     public AuthResponseDTO login(String email) {
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailIgnoreCase(email.toLowerCase())
                 .orElseThrow(() -> new UsernameNotFoundException(email));
 
         String token = jwtService.generateToken(toUserDetails(user));
@@ -51,14 +53,21 @@ public class UserService implements UserDetailsService {
 
     public UserResponseDTO update(Long id, UpdateUserDTO dto) {
         User user = getUser(id);
+        String email = dto.getEmail().toLowerCase();
 
-        if (!user.getEmail().equals(dto.getEmail())
-                && userRepository.existsByEmail(dto.getEmail())) {
-            throw new EmailAlreadyRegisteredException(dto.getEmail());
+        if (!user.getEmail().equalsIgnoreCase(email)
+                && userRepository.existsByEmailIgnoreCase(email)) {
+            throw new EmailAlreadyRegisteredException(email);
         }
 
         user.setName(dto.getName());
-        user.setEmail(dto.getEmail());
+        user.setEmail(email);
+        return UserResponseDTO.from(userRepository.save(user));
+    }
+
+    public UserResponseDTO completeAssessment(Long id) {
+        User user = getUser(id);
+        user.setAssessmentCompleted(true);
         return UserResponseDTO.from(userRepository.save(user));
     }
 
@@ -71,7 +80,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email)
+        return userRepository.findByEmailIgnoreCase(email.toLowerCase())
                 .map(this::toUserDetails)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
     }
