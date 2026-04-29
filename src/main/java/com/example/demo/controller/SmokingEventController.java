@@ -46,9 +46,11 @@ public class SmokingEventController {
 
     @GetMapping("/heatmap")
     public ResponseEntity<List<HeatmapPointDTO>> heatmap(
-            @AuthenticationPrincipal UserDetails userDetails
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month
     ) {
-        return ResponseEntity.ok(eventService.getHeatmap(userDetails.getUsername()));
+        return ResponseEntity.ok(eventService.getHeatmap(userDetails.getUsername(), year, month));
     }
 
     @GetMapping("/relapse-correlation")

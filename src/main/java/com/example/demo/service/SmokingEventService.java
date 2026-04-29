@@ -75,17 +75,19 @@ public class SmokingEventService {
         return new SmokingEventStatsDTO(totalCravings, cigarettesSmoked, mostFrequentContext);
     }
 
-    // ── Insight 1: Mapa de Calor ──────────────────────────────────────────────
-
-    public List<HeatmapPointDTO> getHeatmap(String email) {
+    public List<HeatmapPointDTO> getHeatmap(String email, Integer year, Integer month) {
         Long userId = getUser(email).getId();
 
         List<SmokingEvent> cravings = eventRepository
                 .findByUser_IdAndEventTypeOrderByRecordedAtDesc(userId, EventType.CRAVING);
 
-        // Agrupa por hora + dia da semana + contexto
         Map<String, List<SmokingEvent>> grouped = cravings.stream()
                 .filter(e -> e.getContext() != null)
+                .filter(e -> {
+                    if (year == null || month == null) return true;
+                    LocalDateTime dt = e.getOccurredAt() != null ? e.getOccurredAt() : e.getRecordedAt();
+                    return dt.getYear() == year && dt.getMonthValue() == month;
+                })
                 .collect(Collectors.groupingBy(e -> {
                         LocalDateTime dt = e.getOccurredAt() != null ? e.getOccurredAt() : e.getRecordedAt();
                         return dt.getHour() + "|" + dt.getDayOfWeek().name() + "|" + e.getContext();
@@ -111,8 +113,6 @@ public class SmokingEventService {
                 .collect(Collectors.toList());
     }
 
-    // ── Insight 3: Correlação Gatilhos → Recaídas ────────────────────────────
-
     public RelapseCorrelationDTO getRelapseCorrelation(String email) {
         Long userId = getUser(email).getId();
 
@@ -124,7 +124,6 @@ public class SmokingEventService {
         Map<String, Double> cravingPct  = computeContextPercentages(cravings);
         Map<String, Double> relapsePct  = computeContextPercentages(relapses);
 
-        // Contextos de alto risco: recaída proporcionalmente maior que desejo (+15 p.p.)
         List<String> highRisk = relapsePct.entrySet().stream()
                 .filter(e -> e.getValue() - cravingPct.getOrDefault(e.getKey(), 0.0) >= 15.0)
                 .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
