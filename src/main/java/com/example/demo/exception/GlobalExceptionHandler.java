@@ -40,4 +40,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of("error", "E-mail ou senha inválidos"));
     }
+
+    @ExceptionHandler(AssessmentNotCompletedException.class)
+    public ResponseEntity<Map<String, String>> handleAssessmentRequired(AssessmentNotCompletedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("error", ex.getMessage()));
+    }
 }

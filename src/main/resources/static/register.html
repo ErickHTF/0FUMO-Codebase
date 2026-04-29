@@ -100,7 +100,7 @@
       try {
         const data = await Auth.register(name, email, password);
         saveSession(data);
-        location.href = '/dashboard.html';
+        location.href = '/assessment.html';
       } catch (err) {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Criar conta';

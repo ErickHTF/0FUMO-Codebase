@@ -22,7 +22,7 @@
     <div class="banner" id="assessmentBanner" style="display:none">
       <strong>⚠️ Avaliação inicial pendente</strong>
       As funcionalidades da plataforma ficam disponíveis após a conclusão da avaliação inicial.
-      <br/><a href="#" style="color:#664d03;font-weight:600;">Iniciar avaliação →</a>
+      <br/><a href="/assessment.html" style="color:#664d03;font-weight:600;">Iniciar avaliação →</a>
     </div>
 
     <!-- Profile card -->
@@ -72,8 +72,9 @@
 
   <script src="/js/api.js"></script>
   <script>
-    // Guard
     if (!getToken()) location.href = '/login.html';
+    const cachedUser = getUser();
+    if (cachedUser && !cachedUser.assessmentCompleted) location.href = '/assessment.html';
 
     let currentUser = getUser();
 
