@@ -45,6 +45,9 @@ const Users = {
     apiFetch(`/users/${id}`, { method: 'PUT', body: JSON.stringify({ name, email }) }),
   delete: (id) =>
     apiFetch(`/users/${id}`, { method: 'DELETE' }),
-  completeAssessment: (id) =>
-    apiFetch(`/users/${id}/assessment`, { method: 'POST' }),
+  completeAssessment: (id, cigsPerDay, smokingYears, motivation, dependencyLevel) =>
+    apiFetch(`/users/${id}/assessment`, {
+      method: 'POST',
+      body: JSON.stringify({ cigsPerDay, smokingYears, motivation, dependencyLevel }),
+    }),
 };
