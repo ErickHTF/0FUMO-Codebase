@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.AssessmentRequestDTO;
 import com.example.demo.dto.UpdateUserDTO;
 import com.example.demo.dto.UserResponseDTO;
 import com.example.demo.repository.UserRepository;
@@ -40,8 +41,11 @@ public class UserController {
     }
 
     @PostMapping("/{id}/assessment")
-    public ResponseEntity<UserResponseDTO> completeAssessment(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.completeAssessment(id));
+    public ResponseEntity<UserResponseDTO> completeAssessment(
+            @PathVariable Long id,
+            @Valid @RequestBody AssessmentRequestDTO dto
+    ) {
+        return ResponseEntity.ok(userService.completeAssessment(id, dto));
     }
 
     @DeleteMapping("/{id}")

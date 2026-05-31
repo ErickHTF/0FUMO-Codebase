@@ -65,8 +65,12 @@ public class UserService implements UserDetailsService {
         return UserResponseDTO.from(userRepository.save(user));
     }
 
-    public UserResponseDTO completeAssessment(Long id) {
+    public UserResponseDTO completeAssessment(Long id, AssessmentRequestDTO dto) {
         User user = getUser(id);
+        user.setCigsPerDay(dto.getCigsPerDay());
+        user.setSmokingYears(dto.getSmokingYears());
+        user.setMotivation(dto.getMotivation());
+        user.setDependencyLevel(dto.getDependencyLevel());
         user.setAssessmentCompleted(true);
         return UserResponseDTO.from(userRepository.save(user));
     }

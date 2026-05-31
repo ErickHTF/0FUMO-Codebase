@@ -32,6 +32,14 @@ public class User {
     @Builder.Default
     private boolean assessmentCompleted = false;
 
+    private Integer cigsPerDay;
+
+    private String smokingYears;
+
+    private String motivation;
+
+    private String dependencyLevel;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
