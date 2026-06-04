@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diário de Eventos — 0FUMO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    body.dashboard-body { font-family: 'DM Sans', system-ui, sans-serif; }
+
+    .page-header { margin-bottom: 1.75rem; }
+    .page-header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem;
+      font-weight: 400;
+      color: var(--primary-dark);
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.01em;
+    }
+    .page-header p { color: var(--gray-500); font-size: 0.92rem; }
+
+    /* ── Section label ── */
+    .section-label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--gray-500);
+      margin-bottom: 0.5rem;
+    }
+
+    /* ── Type radio cards ── */
+    .type-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+    }
+    .type-card input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .type-card label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 1rem 0.5rem 0.85rem;
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: border-color 0.16s, background 0.16s, box-shadow 0.16s;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gray-500);
+      background: var(--gray-100);
+      user-select: none;
+    }
+    .type-card label .tc-icon { font-size: 1.6rem; line-height: 1; }
+    .type-card label:hover { border-color: var(--gray-500); background: #fff; }
+
+    .type-card.resistiu input:checked + label {
+      color: var(--primary-dark); border-color: var(--primary);
+      background: #edf7f1; box-shadow: 0 0 0 3px rgba(45,106,79,.13);
+    }
+    .type-card.vontade input:checked + label {
+      color: #92400e; border-color: #d97706;
+      background: #fffbeb; box-shadow: 0 0 0 3px rgba(217,119,6,.13);
+    }
+    .type-card.recaida input:checked + label {
+      color: #9b1c1c; border-color: var(--danger);
+      background: #fef2f2; box-shadow: 0 0 0 3px rgba(230,57,70,.13);
+    }
+
+    /* ── Intensity segmented ── */
+    .intensity-seg {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .int-opt input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .int-opt label {
+      display: block;
+      text-align: center;
+      padding: 0.52rem 0.4rem;
+      font-size: 0.83rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--gray-500);
+      background: var(--gray-100);
+      transition: background 0.15s, color 0.15s;
+      border-right: 1.5px solid var(--gray-200);
+    }
+    .int-opt:last-child label { border-right: none; }
+    .int-opt label:hover { background: #fff; color: var(--gray-900); }
+    .int-opt.baixa input:checked + label  { background: #edf7f1; color: var(--primary-dark); }
+    .int-opt.media input:checked + label  { background: #fffbeb; color: #92400e; }
+    .int-opt.alta  input:checked + label  { background: #fef2f2; color: #9b1c1c; }
+
+    /* ── Selects & inputs ── */
+    select, textarea {
+      width: 100%;
+      padding: 0.62rem 0.85rem;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 7px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+      background: #fff;
+      color: var(--gray-900);
+    }
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%236c757d' d='M5 7 0 2h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.85rem center;
+      cursor: pointer;
+    }
+    select:focus, textarea:focus { border-color: var(--primary-light); }
+    textarea { resize: vertical; min-height: 72px; }
+
+    /* ── Two-column rows ── */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* ── History entry cards ── */
+    .event-card {
+      display: flex;
+      gap: 0.85rem;
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      margin-bottom: 0.65rem;
+      background: #fff;
+      animation: fadeUp 0.22s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(5px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .event-accent {
+      width: 3px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      align-self: stretch;
+    }
+    .event-card.resistiu .event-accent { background: var(--primary); }
+    .event-card.vontade  .event-accent { background: #d97706; }
+    .event-card.recaida  .event-accent { background: var(--danger); }
+
+    .event-body { flex: 1; min-width: 0; }
+    .event-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.28rem;
+    }
+    .event-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.18rem 0.55rem;
+      border-radius: 20px;
+    }
+    .event-card.resistiu .event-badge { background: #d8f3dc; color: var(--primary-dark); }
+    .event-card.vontade  .event-badge { background: #fef3c7; color: #92400e; }
+    .event-card.recaida  .event-badge { background: #fde8ea; color: #9b1c1c; }
+
+    .event-meta { font-size: 0.78rem; color: var(--gray-500); white-space: nowrap; }
+    .event-detail { font-size: 0.84rem; color: var(--gray-900); }
+    .event-notes { font-size: 0.83rem; color: var(--gray-500); font-style: italic; margin-top: 0.18rem; }
+
+    /* ── Empty state ── */
+    .empty-state { text-align: center; padding: 2.5rem 1rem; }
+    .empty-state svg { opacity: 0.3; margin-bottom: 0.9rem; }
+    .empty-state p { color: var(--gray-500); font-size: 0.88rem; line-height: 1.6; max-width: 240px; margin: 0 auto; }
+
+    /* ── Submit ── */
+    #submitBtn { margin-top: 1.5rem; }
+
+    @media (max-width: 520px) {
+      .form-row { grid-template-columns: 1fr; }
+      .type-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="dashboard-body">
+
+  <nav class="topbar">
+    <span class="brand">🚭 0FUMO</span>
+    <div class="topbar-actions">
+      <a href="/dashboard.html" class="btn-sm" style="text-decoration:none">← Voltar</a>
+    </div>
+  </nav>
+
+  <main class="main-content" style="max-width:680px; margin-top:86px;">
+
+    <div class="page-header">
+      <h1>Diário de Eventos</h1>
+      <p>Registre cada momento da sua jornada — cada resistência conta.</p>
+    </div>
+
+    <!-- Form card -->
+    <div class="profile-card" style="margin-bottom:1.5rem">
+      <h2 style="margin-bottom:1.5rem">Novo registro</h2>
+
+      <div id="alert" class="alert alert-danger"></div>
+      <div id="alertSuccess" class="alert alert-success"></div>
+
+      <form id="eventForm" novalidate>
+
+        <!-- Type selector -->
+        <div class="form-group">
+          <span class="section-label">O que aconteceu?</span>
+          <div class="type-cards">
+            <div class="type-card resistiu">
+              <input type="radio" name="type" id="type-resistiu" value="resistiu" />
+              <label for="type-resistiu">
+                <span class="tc-icon">💪</span>
+                Resistência
+              </label>
+            </div>
+            <div class="type-card vontade">
+              <input type="radio" name="type" id="type-fissura" value="fissura" />
+              <label for="type-fissura">
+                <span class="tc-icon">😮‍💨</span>
+                Vontade de fumar
+              </label>
+            </div>
+            <div class="type-card recaida">
+              <input type="radio" name="type" id="type-fumou" value="fumou" />
+              <label for="type-fumou">
+                <span class="tc-icon">⚠️</span>
+                Recaída
+              </label>
+            </div>
+          </div>
+          <span class="field-error" id="typeError"></span>
+        </div>
+
+        <!-- Intensity + Trigger -->
+        <div class="form-row">
+          <div class="form-group">
+            <span class="section-label">Intensidade</span>
+            <div class="intensity-seg">
+              <div class="int-opt baixa">
+                <input type="radio" name="intensity" id="int-baixa" value="baixa" />
+                <label for="int-baixa">Baixa</label>
+              </div>
+              <div class="int-opt media">
+                <input type="radio" name="intensity" id="int-media" value="media" />
+                <label for="int-media">Moderada</label>
+              </div>
+              <div class="int-opt alta">
+                <input type="radio" name="intensity" id="int-alta" value="alta" />
+                <label for="int-alta">Alta</label>
+              </div>
+            </div>
+            <span class="field-error" id="intensityError"></span>
+          </div>
+
+          <div class="form-group">
+            <span class="section-label">Gatilho</span>
+            <select id="triggerSelect">
+              <option value="">Selecione...</option>
+              <option value="estresse">Estresse</option>
+              <option value="tedio">Ociosidade</option>
+              <option value="social">Situação social</option>
+              <option value="apos_refeicao">Após refeição</option>
+              <option value="outro">Outro</option>
+            </select>
+            <span class="field-error" id="triggerError"></span>
+          </div>
+        </div>
+
+        <!-- Date + Notes -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="occurredAt">Data e hora</label>
+            <input type="datetime-local" id="occurredAt" />
+            <span class="field-error" id="occurredAtError"></span>
+          </div>
+          <div class="form-group">
+            <label for="notes">
+              Observações
+              <span style="font-weight:400;color:var(--gray-500)">(opcional)</span>
+            </label>
+            <textarea id="notes" placeholder="Descreva o contexto ou como se sentiu..."></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn">Registrar evento</button>
+      </form>
+    </div>
+
+    <!-- History card -->
+    <div class="profile-card">
+      <h2 style="margin-bottom:1.25rem">Histórico</h2>
+      <div id="eventList">
+        <p style="color:var(--gray-500);font-size:0.9rem">Carregando...</p>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script>
+    if (!getToken()) location.href = '/login.html';
+    const cachedUser = getUser();
+    if (cachedUser && !cachedUser.assessmentCompleted) location.href = '/assessment.html';
+
+    const form        = document.getElementById('eventForm');
+    const alertEl     = document.getElementById('alert');
+    const alertSuccess = document.getElementById('alertSuccess');
+    const submitBtn   = document.getElementById('submitBtn');
+
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    document.getElementById('occurredAt').value = now.toISOString().slice(0, 16);
+
+    function showFieldError(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.add('visible');
+    }
+
+    function clearErrors() {
+      ['typeError', 'intensityError', 'triggerError', 'occurredAtError'].forEach(id => {
+        const el = document.getElementById(id);
+        el.textContent = '';
+        el.classList.remove('visible');
+      });
+      alertEl.textContent = '';      alertEl.classList.remove('visible');
+      alertSuccess.textContent = ''; alertSuccess.classList.remove('visible');
+    }
+
+    function showAlert(msg)   { alertEl.textContent = msg;      alertEl.classList.add('visible'); }
+    function showSuccess(msg) { alertSuccess.textContent = msg; alertSuccess.classList.add('visible'); }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearErrors();
+
+      const typeChecked      = document.querySelector('input[name="type"]:checked');
+      const intensityChecked = document.querySelector('input[name="intensity"]:checked');
+      const type       = typeChecked?.value      || '';
+      const intensity  = intensityChecked?.value || '';
+      const trigger    = document.getElementById('triggerSelect').value;
+      const occurredAt = document.getElementById('occurredAt').value;
+      const notes      = document.getElementById('notes').value.trim() || null;
+
+      let valid = true;
+      if (!type)       { showFieldError('typeError',       'Selecione o tipo de evento');  valid = false; }
+      if (!intensity)  { showFieldError('intensityError',  'Selecione a intensidade');     valid = false; }
+      if (!trigger)    { showFieldError('triggerError',    'Selecione o gatilho');          valid = false; }
+      if (!occurredAt) { showFieldError('occurredAtError', 'Informe a data e hora');        valid = false; }
+      if (!valid) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Registrando…';
+
+      try {
+        await Events.register(type, intensity, trigger, occurredAt + ':00', notes);
+        showSuccess('Evento registrado com sucesso!');
+        form.reset();
+        const n = new Date();
+        n.setMinutes(n.getMinutes() - n.getTimezoneOffset());
+        document.getElementById('occurredAt').value = n.toISOString().slice(0, 16);
+        loadEvents();
+      } catch {
+        showAlert('Erro ao registrar evento. Tente novamente.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Registrar evento';
+      }
+    });
+
+    const typeLabels     = { fissura: 'Vontade de fumar', resistiu: 'Resistência', fumou: 'Recaída' };
+    const typeClass      = { fissura: 'vontade', resistiu: 'resistiu', fumou: 'recaida' };
+    const intensityLabels = { baixa: 'Baixa', media: 'Moderada', alta: 'Alta' };
+    const triggerLabels  = {
+      estresse: 'Estresse', tedio: 'Ociosidade', social: 'Situação social',
+      apos_refeicao: 'Após refeição', outro: 'Outro'
+    };
+
+    function formatDateTime(iso) {
+      if (!iso) return '—';
+      return new Date(iso).toLocaleString('pt-BR', {
+        day: '2-digit', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    async function loadEvents() {
+      const listEl = document.getElementById('eventList');
+      try {
+        const events = await Events.list();
+        if (events.length === 0) {
+          listEl.innerHTML = `
+            <div class="empty-state">
+              <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="4" width="36" height="44" rx="4" stroke="#6c757d" stroke-width="2"/>
+                <line x1="16" y1="15" x2="36" y2="15" stroke="#6c757d" stroke-width="1.8" stroke-linecap="round"/>
+                <line x1="16" y1="23" x2="36" y2="23" stroke="#6c757d" stroke-width="1.8" stroke-linecap="round"/>
+                <line x1="16" y1="31" x2="28" y2="31" stroke="#6c757d" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+              <p>Nenhum evento registrado ainda.<br/>Comece agora para acompanhar sua jornada.</p>
+            </div>`;
+          return;
+        }
+        listEl.innerHTML = events.map(ev => {
+          const cls = typeClass[ev.type] || '';
+          return `
+            <div class="event-card ${cls}">
+              <div class="event-accent"></div>
+              <div class="event-body">
+                <div class="event-top">
+                  <span class="event-badge">${typeLabels[ev.type] || ev.type}</span>
+                  <span class="event-meta">${formatDateTime(ev.occurredAt)}</span>
+                </div>
+                <div class="event-detail">
+                  ${intensityLabels[ev.intensity] || ev.intensity} &nbsp;·&nbsp; ${triggerLabels[ev.trigger] || ev.trigger}
+                </div>
+                ${ev.notes ? `<div class="event-notes">"${ev.notes}"</div>` : ''}
+              </div>
+            </div>`;
+        }).join('');
+      } catch {
+        listEl.innerHTML = '<p style="color:var(--danger);font-size:0.9rem">Erro ao carregar eventos.</p>';
+      }
+    }
+
+    loadEvents();
+  </script>
+</body>
+</html>
