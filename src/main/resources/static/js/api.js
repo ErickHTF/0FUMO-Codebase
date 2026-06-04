@@ -1,4 +1,4 @@
-const API_BASE = '/api';
+const API_BASE = 'http://localhost:8080/api';
 
 function getToken() {
   return localStorage.getItem('token');
@@ -50,4 +50,13 @@ const Users = {
       method: 'POST',
       body: JSON.stringify({ cigsPerDay, smokingYears, motivation, dependencyLevel }),
     }),
+};
+
+const Events = {
+  register: (type, intensity, trigger, occurredAt, notes) =>
+    apiFetch('/events', {
+      method: 'POST',
+      body: JSON.stringify({ type, intensity, trigger, occurredAt, notes }),
+    }),
+  list: () => apiFetch('/events'),
 };
