@@ -5,7 +5,7 @@ API REST em Spring Boot para a aplicação de cessação do tabagismo.
 ## Pré-requisitos
 
 - Java 21
-- Docker (banco de dados)
+- Docker Desktop
 
 ## Como rodar
 
@@ -14,6 +14,8 @@ API REST em Spring Boot para a aplicação de cessação do tabagismo.
 ```bash
 docker compose up -d
 ```
+
+Sobe um PostgreSQL 13 na porta 5433.
 
 **2. Roda a API**
 
