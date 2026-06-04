@@ -12,6 +12,10 @@ public class UserResponseDTO {
     private String name;
     private String email;
     private boolean assessmentCompleted;
+    private Integer cigsPerDay;
+    private String smokingYears;
+    private String motivation;
+    private String dependencyLevel;
     private LocalDateTime createdAt;
 
     public static UserResponseDTO from(User user) {
@@ -20,6 +24,10 @@ public class UserResponseDTO {
         dto.name = user.getName();
         dto.email = user.getEmail();
         dto.assessmentCompleted = user.isAssessmentCompleted();
+        dto.cigsPerDay = user.getCigsPerDay();
+        dto.smokingYears = user.getSmokingYears();
+        dto.motivation = user.getMotivation();
+        dto.dependencyLevel = user.getDependencyLevel();
         dto.createdAt = user.getCreatedAt();
         return dto;
     }
