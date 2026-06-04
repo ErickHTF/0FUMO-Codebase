@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avaliação Inicial — 0FUMO</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="card">
+    <div class="card-logo">
+      <h1>0FUMO</h1>
+      <p>Avaliação inicial</p>
+    </div>
+
+    <p style="text-align:center;color:var(--text-muted);margin-bottom:1.5rem;">
+      Responda algumas perguntas para personalizar sua jornada de cessação do tabagismo.
+    </p>
+
+    <div id="alert" class="alert alert-danger"></div>
+
+    <form id="assessmentForm" novalidate>
+      <div class="form-group">
+        <label for="cigarettesPerDay">Quantos cigarros você fuma por dia?</label>
+        <input type="number" id="cigarettesPerDay" placeholder="Ex: 10" min="1" />
+        <span class="field-error" id="cigarettesError"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="yearsSmokingSelect">Há quantos anos você fuma?</label>
+        <select id="yearsSmokingSelect">
+          <option value="">Selecione...</option>
+          <option value="less1">Menos de 1 ano</option>
+          <option value="1-5">1 a 5 anos</option>
+          <option value="6-10">6 a 10 anos</option>
+          <option value="11-20">11 a 20 anos</option>
+          <option value="more20">Mais de 20 anos</option>
+        </select>
+        <span class="field-error" id="yearsError"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="motivationSelect">Principal motivação para parar de fumar?</label>
+        <select id="motivationSelect">
+          <option value="">Selecione...</option>
+          <option value="health">Saúde</option>
+          <option value="family">Família</option>
+          <option value="financial">Financeiro</option>
+          <option value="other">Outro</option>
+        </select>
+        <span class="field-error" id="motivationError"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="dependencySelect">Nível de dependência ao cigarro?</label>
+        <select id="dependencySelect">
+          <option value="">Selecione...</option>
+          <option value="low">Baixo</option>
+          <option value="medium">Médio</option>
+          <option value="high">Alto</option>
+        </select>
+        <span class="field-error" id="dependencyError"></span>
+      </div>
+
+      <button type="submit" class="btn" id="submitBtn">Concluir avaliação</button>
+    </form>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    if (!getToken()) location.href = '/login.html';
+    const user = getUser();
+    if (user && user.assessmentCompleted) location.href = '/dashboard.html';
+
+    const form = document.getElementById('assessmentForm');
+    const alertEl = document.getElementById('alert');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function showFieldError(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.add('visible');
+    }
+
+    function clearErrors() {
+      ['cigarettesError', 'yearsError', 'motivationError', 'dependencyError'].forEach(id => {
+        const el = document.getElementById(id);
+        el.textContent = '';
+        el.classList.remove('visible');
+      });
+      alertEl.textContent = '';
+      alertEl.classList.remove('visible');
+    }
+
+    function showAlert(msg) {
+      alertEl.textContent = msg;
+      alertEl.classList.add('visible');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearErrors();
+
+      const cigarettes = document.getElementById('cigarettesPerDay').value;
+      const years = document.getElementById('yearsSmokingSelect').value;
+      const motivation = document.getElementById('motivationSelect').value;
+      const dependency = document.getElementById('dependencySelect').value;
+
+      let valid = true;
+      if (!cigarettes || parseInt(cigarettes) < 1) {
+        showFieldError('cigarettesError', 'Informe a quantidade de cigarros por dia');
+        valid = false;
+      }
+      if (!years) {
+        showFieldError('yearsError', 'Selecione há quantos anos você fuma');
+        valid = false;
+      }
+      if (!motivation) {
+        showFieldError('motivationError', 'Selecione sua principal motivação');
+        valid = false;
+      }
+      if (!dependency) {
+        showFieldError('dependencyError', 'Selecione seu nível de dependência');
+        valid = false;
+      }
+      if (!valid) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Salvando…';
+
+      try {
+        const updatedUser = await Users.completeAssessment(user.id, parseInt(cigarettes), years, motivation, dependency);
+        const session = JSON.parse(localStorage.getItem('user') || '{}');
+        session.assessmentCompleted = true;
+        localStorage.setItem('user', JSON.stringify({ ...session, ...updatedUser }));
+        location.href = '/dashboard.html';
+      } catch {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Concluir avaliação';
+        showAlert('Erro ao salvar avaliação. Tente novamente.');
+      }
+    });
+  </script>
+</body>
+</html>

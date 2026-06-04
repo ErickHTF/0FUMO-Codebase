@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.AssessmentRequestDTO;
 import com.example.demo.dto.UpdateUserDTO;
 import com.example.demo.dto.UserResponseDTO;
 import com.example.demo.repository.UserRepository;
@@ -21,7 +22,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<UserResponseDTO> me(@AuthenticationPrincipal UserDetails userDetails) {
-        return userRepository.findByEmail(userDetails.getUsername())
+        return userRepository.findByEmailIgnoreCase(userDetails.getUsername())
                 .map(u -> ResponseEntity.ok(UserResponseDTO.from(u)))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -37,6 +38,14 @@ public class UserController {
             @Valid @RequestBody UpdateUserDTO dto
     ) {
         return ResponseEntity.ok(userService.update(id, dto));
+    }
+
+    @PostMapping("/{id}/assessment")
+    public ResponseEntity<UserResponseDTO> completeAssessment(
+            @PathVariable Long id,
+            @Valid @RequestBody AssessmentRequestDTO dto
+    ) {
+        return ResponseEntity.ok(userService.completeAssessment(id, dto));
     }
 
     @DeleteMapping("/{id}")
