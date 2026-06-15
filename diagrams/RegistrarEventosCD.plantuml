@@ -1,0 +1,82 @@
+@startuml
+
+package "pkg 2.Design" {
+
+  class Usuario {
+    - id : Long
+    - email : String
+    - senha : String
+    - nome : String
+    - assessmentCompleted : boolean
+  }
+
+  class Evento {
+    - id : Long
+    - type : String
+    - intensity : String
+    - trigger : String
+    - notes : String
+    - occurredAt : LocalDateTime
+    - createdAt : LocalDateTime
+  }
+
+  Usuario "1" -- "0..*" Evento : registra >
+
+}
+
+class EventRequestDTO {
+  - type : String
+  - intensity : String
+  - trigger : String
+  - notes : String
+  - occurredAt : LocalDateTime
+}
+
+class EventResponseDTO {
+  - id : Long
+  - type : String
+  - intensity : String
+  - trigger : String
+  - notes : String
+  - occurredAt : LocalDateTime
+  - createdAt : LocalDateTime
+  + from(event) : EventResponseDTO
+}
+
+class EventWithSuggestionsDTO {
+  - event : EventResponseDTO
+  - suggestions : List<RelaxationResourceResponseDTO>
+}
+
+class EventController {
+  + register(userDetails, dto) : EventWithSuggestionsDTO
+  + list(userDetails) : List<EventResponseDTO>
+}
+
+class EventService {
+  + register(email, dto) : EventWithSuggestionsDTO
+  + listByUser(email) : List<EventResponseDTO>
+}
+
+class EventRepository {
+  + findByUserIdOrderByOccurredAtDesc(userId) : List<Event>
+  + save(event) : Event
+}
+
+EventController --> EventService
+EventController ..> EventRequestDTO
+EventController ..> EventWithSuggestionsDTO
+EventService --> EventRepository
+EventService --> UserRepository
+EventService --> RelaxationResourceRepository
+EventRepository ..> Evento
+
+class UserRepository {
+  + findByEmailIgnoreCase(email) : Optional<User>
+}
+
+class RelaxationResourceRepository {
+  + findByTriggerIgnoreCase(trigger) : List<RelaxationResource>
+}
+
+@enduml

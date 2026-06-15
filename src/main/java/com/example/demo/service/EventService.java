@@ -2,11 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.dto.EventRequestDTO;
 import com.example.demo.dto.EventResponseDTO;
+import com.example.demo.dto.EventWithSuggestionsDTO;
+import com.example.demo.dto.RelaxationResourceResponseDTO;
 import com.example.demo.entity.Event;
 import com.example.demo.entity.User;
 import com.example.demo.exception.AssessmentNotCompletedException;
 import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.repository.EventRepository;
+import com.example.demo.repository.RelaxationResourceRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,8 +22,9 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final RelaxationResourceRepository relaxationResourceRepository;
 
-    public EventResponseDTO register(String email, EventRequestDTO dto) {
+    public EventWithSuggestionsDTO register(String email, EventRequestDTO dto) {
         User user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new UserNotFoundException(0L));
 
@@ -37,7 +41,18 @@ public class EventService {
                 .occurredAt(dto.getOccurredAt())
                 .build();
 
-        return EventResponseDTO.from(eventRepository.save(event));
+        EventResponseDTO eventResponse = EventResponseDTO.from(eventRepository.save(event));
+
+        List<RelaxationResourceResponseDTO> suggestions = relaxationResourceRepository
+                .findByTriggerIgnoreCase(dto.getTrigger())
+                .stream()
+                .map(RelaxationResourceResponseDTO::from)
+                .toList();
+
+        return EventWithSuggestionsDTO.builder()
+                .event(eventResponse)
+                .suggestions(suggestions)
+                .build();
     }
 
     public List<EventResponseDTO> listByUser(String email) {
