@@ -1,0 +1,36 @@
+@startuml
+package controller {
+}
+
+package dto {
+}
+
+package service {
+}
+
+package repository {
+}
+
+controller ..> service
+controller ..> dto
+service ..> dto
+UserController --> "- userService" UserService
+UserService --> "- userRepository" UserRepository
+UserController --> "- userRepository" UserRepository
+UserRepository ..> User
+UserController ..> UserResponseDT0
+EventController --> "- eventService" EventService
+EventService --> "- eventRepository" EventRepository
+EventService --> "- userRepository" UserRepository
+EventRepository ..> Event
+EventController ..> EventResponseDTO
+ProgressController --> "- progressService" ProgressService
+ProgressService --> "- eventRepository" EventRepository
+ProgressService --> "- userRepository" UserRepository
+ProgressController ..> ProgressStatsDTO
+RelaxationResourceController --> "- relaxationResourceService" RelaxationResourceService
+RelaxationResourceService --> "- relaxationResourceRepository" RelaxationResourceRepository
+RelaxationResourceService --> "- userRepository" UserRepository
+RelaxationResourceRepository ..> RelaxationResource
+RelaxationResourceController ..> RelaxationResourceResponseDTO
+@enduml

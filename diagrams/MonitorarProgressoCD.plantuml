@@ -1,0 +1,33 @@
+@startuml
+
+class ProgressStatsDTO {
+  - totalEvents : long
+  - eventsByType : Map<String, Long>
+  - eventsByIntensity : Map<String, Long>
+  - eventsByTrigger : Map<String, Long>
+  - lastEventAt : LocalDateTime
+  - daysTracking : long
+}
+
+class ProgressController {
+  + getStats(userDetails) : ProgressStatsDTO
+}
+
+class ProgressService {
+  + getStats(email) : ProgressStatsDTO
+}
+
+class EventRepository {
+  + findByUserIdOrderByOccurredAtDesc(userId) : List<Event>
+}
+
+class UserRepository {
+  + findByEmailIgnoreCase(email) : Optional<User>
+}
+
+ProgressController --> ProgressService
+ProgressController ..> ProgressStatsDTO
+ProgressService --> EventRepository
+ProgressService --> UserRepository
+
+@enduml
