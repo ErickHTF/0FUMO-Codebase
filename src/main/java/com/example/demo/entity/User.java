@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -31,6 +32,17 @@ public class User {
     @Column(nullable = false)
     @Builder.Default
     private boolean assessmentCompleted = false;
+
+    private Integer cigsPerDay;
+
+    private String smokingYears;
+
+    private String motivation;
+
+    private String dependencyLevel;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Event> events;
 
     @CreationTimestamp
     @Column(updatable = false)
