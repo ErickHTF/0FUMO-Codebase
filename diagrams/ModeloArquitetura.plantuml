@@ -28,4 +28,9 @@ ProgressController --> "- progressService" ProgressService
 ProgressService --> "- eventRepository" EventRepository
 ProgressService --> "- userRepository" UserRepository
 ProgressController ..> ProgressStatsDTO
+RelaxationResourceController --> "- relaxationResourceService" RelaxationResourceService
+RelaxationResourceService --> "- relaxationResourceRepository" RelaxationResourceRepository
+RelaxationResourceService --> "- userRepository" UserRepository
+RelaxationResourceRepository ..> RelaxationResource
+RelaxationResourceController ..> RelaxationResourceResponseDTO
 @enduml

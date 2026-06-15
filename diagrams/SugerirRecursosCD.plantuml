@@ -1,0 +1,49 @@
+@startuml
+
+package "pkg 2.Design" {
+
+  class RecursoRelaxamento {
+    - id : Long
+    - title : String
+    - description : String
+    - category : String
+    - trigger : String
+  }
+
+}
+
+class RelaxationResourceResponseDTO {
+  - id : Long
+  - title : String
+  - description : String
+  - category : String
+  - trigger : String
+  + from(resource) : RelaxationResourceResponseDTO
+}
+
+class RelaxationResourceController {
+  + listAll(userDetails) : List<RelaxationResourceResponseDTO>
+  + getByTrigger(userDetails, trigger) : List<RelaxationResourceResponseDTO>
+}
+
+class RelaxationResourceService {
+  + listAll(email) : List<RelaxationResourceResponseDTO>
+  + getByTrigger(email, trigger) : List<RelaxationResourceResponseDTO>
+}
+
+class RelaxationResourceRepository {
+  + findByTriggerIgnoreCase(trigger) : List<RelaxationResource>
+  + findAll() : List<RelaxationResource>
+}
+
+RelaxationResourceController --> RelaxationResourceService
+RelaxationResourceController ..> RelaxationResourceResponseDTO
+RelaxationResourceService --> RelaxationResourceRepository
+RelaxationResourceService --> UserRepository
+RelaxationResourceRepository ..> RecursoRelaxamento
+
+class UserRepository {
+  + findByEmailIgnoreCase(email) : Optional<User>
+}
+
+@enduml
