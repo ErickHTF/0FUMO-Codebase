@@ -23,13 +23,37 @@ SELECT 'Ouvir música relaxante', 'Coloque fones e ouça uma playlist calma por 
 WHERE NOT EXISTS (SELECT 1 FROM relaxation_resources WHERE title = 'Ouvir música relaxante');
 
 INSERT INTO relaxation_resources (title, description, category, trigger)
-SELECT 'Jogo no celular', 'Jogue algo leve por alguns minutos para distrair a mente do tédio.', 'distração', 'tédio'
+SELECT 'Jogo no celular', 'Jogue algo leve por alguns minutos para distrair a mente do tédio.', 'distração', 'tedio'
 WHERE NOT EXISTS (SELECT 1 FROM relaxation_resources WHERE title = 'Jogo no celular');
 
 INSERT INTO relaxation_resources (title, description, category, trigger)
-SELECT 'Alongamento', 'Faça uma sequência de alongamentos por 5 minutos. Melhora o foco e reduz a ansiedade.', 'exercício', 'tédio'
+SELECT 'Alongamento', 'Faça uma sequência de alongamentos por 5 minutos. Melhora o foco e reduz a ansiedade.', 'exercício', 'tedio'
 WHERE NOT EXISTS (SELECT 1 FROM relaxation_resources WHERE title = 'Alongamento');
 
 INSERT INTO relaxation_resources (title, description, category, trigger)
-SELECT 'Ler um artigo', 'Leia algo interessante por 10 minutos para ocupar a mente.', 'distração', 'tédio'
+SELECT 'Ler um artigo', 'Leia algo interessante por 10 minutos para ocupar a mente.', 'distração', 'tedio'
 WHERE NOT EXISTS (SELECT 1 FROM relaxation_resources WHERE title = 'Ler um artigo');
+
+INSERT INTO relaxation_resources (title, description, category, trigger)
+SELECT 'Beber água com limão', 'Beba um copo de água com limão devagar. Ajuda a limpar o palato e reduz o desejo.', 'hábito substituto', 'apos_refeicao'
+WHERE NOT EXISTS (SELECT 1 FROM relaxation_resources WHERE title = 'Beber água com limão');
+
+INSERT INTO relaxation_resources (title, description, category, trigger)
+SELECT 'Lavar os dentes', 'Escove os dentes imediatamente após a refeição. O gosto de menta reduz a vontade de fumar.', 'hábito substituto', 'apos_refeicao'
+WHERE NOT EXISTS (SELECT 1 FROM relaxation_resources WHERE title = 'Lavar os dentes');
+
+INSERT INTO relaxation_resources (title, description, category, trigger)
+SELECT 'Caminhar após comer', 'Faça uma caminhada leve de 5 minutos após a refeição para desviar o foco.', 'exercício', 'apos_refeicao'
+WHERE NOT EXISTS (SELECT 1 FROM relaxation_resources WHERE title = 'Caminhar após comer');
+
+INSERT INTO relaxation_resources (title, description, category, trigger)
+SELECT 'Respiração profunda', 'Respire fundo 5 vezes, contando até 4 na inspiração e 6 na expiração.', 'respiração', 'outro'
+WHERE NOT EXISTS (SELECT 1 FROM relaxation_resources WHERE title = 'Respiração profunda');
+
+INSERT INTO relaxation_resources (title, description, category, trigger)
+SELECT 'Beber um copo d''água', 'Hidrate-se bebendo um copo de água devagar. Ajuda a ocupar as mãos e a boca.', 'hábito substituto', 'outro'
+WHERE NOT EXISTS (SELECT 1 FROM relaxation_resources WHERE title = 'Beber um copo d''água');
+
+INSERT INTO relaxation_resources (title, description, category, trigger)
+SELECT 'Meditação guiada', 'Use um app de meditação por 5 minutos para acalmar a mente.', 'relaxamento', 'outro'
+WHERE NOT EXISTS (SELECT 1 FROM relaxation_resources WHERE title = 'Meditação guiada');
