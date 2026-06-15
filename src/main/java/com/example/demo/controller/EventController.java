@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.EventRequestDTO;
 import com.example.demo.dto.EventResponseDTO;
-import com.example.demo.dto.EventWithSuggestionsDTO;
 import com.example.demo.service.EventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,7 @@ public class EventController {
     private final EventService eventService;
 
     @PostMapping
-    public ResponseEntity<EventWithSuggestionsDTO> register(
+    public ResponseEntity<EventResponseDTO> register(
             @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody EventRequestDTO dto
     ) {

@@ -97,13 +97,12 @@ class RegistrarEventosIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(eventPayload("fissura", "alta", "estresse", "Tive vontade após reunião")))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.event.id").isNumber())
-                .andExpect(jsonPath("$.event.type").value("fissura"))
-                .andExpect(jsonPath("$.event.intensity").value("alta"))
-                .andExpect(jsonPath("$.event.trigger").value("estresse"))
-                .andExpect(jsonPath("$.event.notes").value("Tive vontade após reunião"))
-                .andExpect(jsonPath("$.event.occurredAt").isNotEmpty())
-                .andExpect(jsonPath("$.suggestions").isArray());
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.type").value("fissura"))
+                .andExpect(jsonPath("$.intensity").value("alta"))
+                .andExpect(jsonPath("$.trigger").value("estresse"))
+                .andExpect(jsonPath("$.notes").value("Tive vontade após reunião"))
+                .andExpect(jsonPath("$.occurredAt").isNotEmpty());
     }
 
     @Test
@@ -118,8 +117,7 @@ class RegistrarEventosIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(eventPayload("resistiu", "media", "tedio", null)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.event.type").value("resistiu"))
-                .andExpect(jsonPath("$.suggestions").isArray());
+                .andExpect(jsonPath("$.type").value("resistiu"));
     }
 
     @Test

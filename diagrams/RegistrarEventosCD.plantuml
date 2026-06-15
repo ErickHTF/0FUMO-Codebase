@@ -43,18 +43,13 @@ class EventResponseDTO {
   + from(event) : EventResponseDTO
 }
 
-class EventWithSuggestionsDTO {
-  - event : EventResponseDTO
-  - suggestions : List<RelaxationResourceResponseDTO>
-}
-
 class EventController {
-  + register(userDetails, dto) : EventWithSuggestionsDTO
+  + register(userDetails, dto) : EventResponseDTO
   + list(userDetails) : List<EventResponseDTO>
 }
 
 class EventService {
-  + register(email, dto) : EventWithSuggestionsDTO
+  + register(email, dto) : EventResponseDTO
   + listByUser(email) : List<EventResponseDTO>
 }
 
@@ -65,18 +60,13 @@ class EventRepository {
 
 EventController --> EventService
 EventController ..> EventRequestDTO
-EventController ..> EventWithSuggestionsDTO
+EventController ..> EventResponseDTO
 EventService --> EventRepository
 EventService --> UserRepository
-EventService --> RelaxationResourceRepository
 EventRepository ..> Evento
 
 class UserRepository {
   + findByEmailIgnoreCase(email) : Optional<User>
-}
-
-class RelaxationResourceRepository {
-  + findByTriggerIgnoreCase(trigger) : List<RelaxationResource>
 }
 
 @enduml

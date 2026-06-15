@@ -33,6 +33,4 @@ RelaxationResourceService --> "- relaxationResourceRepository" RelaxationResourc
 RelaxationResourceService --> "- userRepository" UserRepository
 RelaxationResourceRepository ..> RelaxationResource
 RelaxationResourceController ..> RelaxationResourceResponseDTO
-EventService --> "- relaxationResourceRepository" RelaxationResourceRepository
-EventController ..> EventWithSuggestionsDTO
 @enduml

@@ -71,13 +71,12 @@ Executar antes de considerar qualquer tarefa concluída.
 - [ ] Entidade `RelaxationResource` contém: `id`, `title`, `description`, `category`, `trigger`?
 - [ ] Endpoint `GET /api/relaxation-resources` lista todos os recursos?
 - [ ] Endpoint `GET /api/relaxation-resources?trigger=X` filtra por gatilho?
-- [ ] `POST /api/events` retorna `EventWithSuggestionsDTO` com evento + sugestões baseadas no trigger?
 - [ ] DTO `RelaxationResourceResponseDTO` contém todos os campos da entidade?
 - [ ] Service valida se avaliação inicial foi concluída (403 se não)?
 - [ ] `data.sql` popula recursos iniciais sem duplicar (idempotente)?
 - [ ] Diagrama `SugerirRecursosCD.plantuml` reflete a implementação?
-- [ ] Diagrama `RegistrarEventosCD.plantuml` atualizado com `EventWithSuggestionsDTO`?
 - [ ] `ModeloArquitetura.plantuml` inclui `RelaxationResourceController` → `RelaxationResourceService`?
+- [ ] `POST /api/events` continua retornando `EventResponseDTO` (sem breaking change)?
 
 ---
 

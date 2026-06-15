@@ -21,11 +21,6 @@ class RelaxationResourceResponseDTO {
   + from(resource) : RelaxationResourceResponseDTO
 }
 
-class EventWithSuggestionsDTO {
-  - event : EventResponseDTO
-  - suggestions : List<RelaxationResourceResponseDTO>
-}
-
 class RelaxationResourceController {
   + listAll(userDetails) : List<RelaxationResourceResponseDTO>
   + getByTrigger(userDetails, trigger) : List<RelaxationResourceResponseDTO>
@@ -41,22 +36,11 @@ class RelaxationResourceRepository {
   + findAll() : List<RelaxationResource>
 }
 
-class EventService {
-  + register(email, dto) : EventWithSuggestionsDTO
-}
-
-class EventController {
-  + register(userDetails, dto) : EventWithSuggestionsDTO
-}
-
 RelaxationResourceController --> RelaxationResourceService
 RelaxationResourceController ..> RelaxationResourceResponseDTO
 RelaxationResourceService --> RelaxationResourceRepository
 RelaxationResourceService --> UserRepository
 RelaxationResourceRepository ..> RecursoRelaxamento
-EventService --> RelaxationResourceRepository
-EventController ..> EventWithSuggestionsDTO
-EventService ..> EventWithSuggestionsDTO
 
 class UserRepository {
   + findByEmailIgnoreCase(email) : Optional<User>
